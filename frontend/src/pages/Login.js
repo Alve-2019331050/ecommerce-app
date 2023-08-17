@@ -1,33 +1,51 @@
-import React, { useState } from 'react'
-import Layout from '../components/Layout/Layout'
-
-import { Link } from 'react-router-dom';
-import toast from 'react-hot-toast';
 import axios from 'axios';
+import React, { useState } from "react";
+import toast from 'react-hot-toast';
+import { Link, useNavigate } from 'react-router-dom';
+import Layout from "../components/Layout/Layout";
+import { useAuth } from "../context/auth";
 
 const Login = () => {
+
     //variables and setter functions to capture data entered in the form input fields
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    // context API variable and setter function
+    const [auth, setAuth] = useAuth();
 
-    // //form function
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     try {
-    //         const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/login`,
-    //             { email, password });
-    //         if (res.data.success) {
-    //             toast.success(res.data.message);
-    //         } else {
-    //             toast.error(res.data.message);
-    //         }
+    //creating hook for navigation
+    const navigate = useNavigate();
 
-    //     } catch (error) {
-    //         console.log(error);
-    //         toast.error('Sorry! Something went wrong. :(');
-    //     }
-    // }
+    //form function
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            console.log(email,password);
+            const res = await axios.post('http://localhost:8080/api/auth/login',
+                { email, password });
+            if (res.data.success) {
+                toast.success(res.data.message);
+                //context API stuff
+                setAuth({
+                    ...auth,
+                    user: res.data.user,
+                    token: res.data.token,
+                });
+                //saving API stuffs to local storage
+                localStorage.setItem('auth', JSON.stringify(res.data));
+                //navigate to page not found(for now) page if user loggedin successfully
+                setTimeout(() => {
+                    navigate("/");
+                }, 1000);
+            } else {
+                toast.error(res.data.message);
+            }
 
+        } catch (error) {
+            console.log(error);
+            toast.error('Sorry! Something went wrong. :(');
+        }
+    }
     return (
         <Layout>
             <div className="row flex d-flex justify-center shadow-lg bg-body rounded"
@@ -42,8 +60,7 @@ const Login = () => {
                     <h4 class="fw-bold text-center mt-5 mb-5">Sign In to your Account</h4>
 
                     {/** Login Form */}
-                    {/* <form onSubmit={handleSubmit}> */}
-                    <form>
+                    <form onSubmit={handleSubmit}>
                         <div class="mb-3 mt-3 px-5">
                             <label for="email" class="form-label">Email:</label>
                             <input type="email"
@@ -58,7 +75,10 @@ const Login = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                                 className="form-control" id="pwd" placeholder="Enter password" name="pswd" required />
                         </div>
-                        <div style={{ marginLeft: '260px' }}>
+                        <div style={{marginLeft: '225px', marginBottom: '12px'}}>
+                            <button type="button" class="btn btn-dark" onClick={()=>{setTimeout(() => {navigate("/forgot-password");}, 1000);}}>Forgot Password</button>
+                        </div>
+                        <div style={{ marginLeft: '260px' }}> 
                             <button type="submit" class="btn btn-dark">Sign In</button>
                         </div>
                     </form>
@@ -84,4 +104,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default Login;
