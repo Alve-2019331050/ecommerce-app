@@ -7,6 +7,8 @@ const dotenv = require("dotenv");
 //configure env
 dotenv.config();
 
+
+//middlewares
 app.use(cors());
 app.use(express.json());
 
@@ -17,6 +19,7 @@ connectDB();
 const PORT = process.env.PORT || 8082;
 
 //routes
+
 //Bank api
 const bankRoutes = require('./routes/bankRoutes');
 app.use('/api/bank', bankRoutes);

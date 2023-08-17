@@ -13,8 +13,8 @@ const accountSchema = new mongoose.Schema({
 });
 
 //connecting schema defined for accounts, i.e, accountSchema
-// to collection created in mongoDB database, ie, collection named bank_account
+// to collection created in mongoDB database, ie, collection named bank_accounts
 
-const BankAccount = mongoose.model('bank_account', accountSchema);
+const BankAccount = mongoose.model('bank_accounts', accountSchema);
 
 module.exports = BankAccount;
