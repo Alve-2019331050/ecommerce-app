@@ -195,6 +195,7 @@ const makeTransactionController = async (req, res) => {
         //validation
         if (!from_ac || !to_ac || !money) {
             return res.send({
+                success:false,
                 message: 'Please enter from account ID, to account ID and money.'
             });
         }

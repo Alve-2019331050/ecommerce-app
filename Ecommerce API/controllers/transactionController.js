@@ -1,6 +1,8 @@
+const axios = require('axios');
+
 module.exports.handleBuy = async(req,res) => {
     try {
-        const {userAccountNo,transactionAmount,product} = req.body;
+        const {userAccountNo,transactionAmount} = req.body;
 
         // check if any user exists with this account no
         const {data} = await axios.get(`http://localhost:8082/api/bank/account/${userAccountNo}`);
@@ -12,39 +14,25 @@ module.exports.handleBuy = async(req,res) => {
         }
         else{
             const {data: transaction} = await axios.post('http://localhost:8082/api/bank/makeTransaction',{
-                senderAccountNo: userAccountNo,
-                receiverAccountNo: 12345678, // to be changed
-                transactionAmount
+                from_ac: userAccountNo,
+                to_ac: process.env.ECOMMERCE_ACCOUNT_NO,
+                money: transactionAmount
             });
             if(transaction?.success){
-                const {data:transactionRecord} = await axios.post('http://localhost:8082/api/bank/create-transaction-record',{
-                    senderAccountNo: 12345678, // to be changed
-                    receiverAccountNo: 12345678, //to be changed
-                    transactionAmount
+                const {data:orderInfo} = await axios.post('http://localhost:8081/api/supplier/supply-product',{
+                    transactionRecord:transaction.trx_id
                 });
-                if(transactionRecord?.success){
-                    const {data:orderInfo} = await axios.post('http://localhost:8081/api/supplier/supply-product',{
-                        product,
-                        transactionRecord
-                    });
-                    if(orderInfo?.success == false){
-                        res.status(503).send({
-                            success:false,
-                            message:'Sorry,could not supply products'
-                        });
-                    }
-                }
-                else{
-                    res.status(504).send({
+                if(orderInfo?.success == false){
+                    res.status(503).send({
                         success:false,
-                        message:'Error occured in creating transaction record'
+                        message:orderInfo.message
                     });
                 }
             }
             else{
                 res.status(501).send({
                     success:false,
-                    message:'Could not complete the transaction'
+                    message:transaction.message
                 });
             }
         }

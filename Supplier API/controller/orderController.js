@@ -1,8 +1,8 @@
 module.exports.supplyProductController = async(req,res) => {
     try {
         const {transactionRecord} = req.body;
-        const {data} = await axios.post('http://localhost:8082/api/bank/verify-transaction',{
-            transactionRecord
+        const {data} = await axios.post('http://localhost:8082/api/bank/verifyTransaction',{
+            trx_id:transactionRecord
         });
         if(data?.success){
             res.status(200).send({
@@ -11,9 +11,9 @@ module.exports.supplyProductController = async(req,res) => {
             });
         }
         else{
-            res.status(501).send({
+            res.status(404).send({
                 success:false,
-                message:'Could not verify transaction record'
+                message:data.message
             });
         }
     } catch (error) {

@@ -1,6 +1,6 @@
 module.exports = balanceController = async(req,res) => {
     try {
-        const {data} = await axios.get('http://localhost:8082/api/bank/get-amount?accNo=123456&secret=123456'); // to be changed
+        const {data} = await axios.get(`http://localhost:8082/api/bank/check-balance/${process.env.SUPPLIER_ACCOUNT_NO}/${process.env.SUPPLIER_SECRET_KEY}`); // to be changed
         if(data?.success){
             res.status(200).send({
                 success:true,
@@ -10,7 +10,7 @@ module.exports = balanceController = async(req,res) => {
         else{
             res.status(500).send({
                 success:false,
-                message:'Error in fetching your bank balance'
+                message:data.message
             });
         }
     } catch (error) {
