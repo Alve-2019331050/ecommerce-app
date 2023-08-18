@@ -8,16 +8,22 @@ const router = express.Router();
 const BankAccount = require('../models/account');
 const Transaction = require('../models/transaction');
 
-//importing controller to CREATE ACCOUNT
-const createAccountController = require('../controllers/bankController');
-//importing controller to GET AMOUNT
-const checkBalanceController = require('../controllers/bankController');
-//importing controller to MAKE TRANSACTION
-const makeTransactionController = require('../controllers/bankController');
-//importing controller to ADD MONEY
-const addMoneyController = require('../controllers/bankController');
-//importing controller to SUB MONEY
-const subMoneyController = require('../controllers/bankController');
+// //importing controller to CREATE ACCOUNT
+// const createAccountController = require('../controllers/bankController');
+// //importing controller to GET AMOUNT
+// const checkBalanceController = require('../controllers/bankController');
+// //importing controller to MAKE TRANSACTION
+// const makeTransactionController = require('../controllers/bankController');
+// //importing controller to ADD MONEY
+// const addMoneyController = require('../controllers/bankController');
+// //importing controller to SUB MONEY
+// const subMoneyController = require('../controllers/bankController');
+const { createAccountController,
+    checkBalanceController,
+    addMoneyController,
+    subMoneyController,
+    makeTransactionController
+} = require('../controllers/bankController');
 
 
 
