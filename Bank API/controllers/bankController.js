@@ -327,7 +327,7 @@ const verifyTransactionController = async (req, res) => {
         // GENERATE new transaction ID
         const new_trx_id = uuid.v4();
 
-        // save transaction record(trx_id,from_ac,to_ac,money) to 'transaction' collection
+        // save transaction record(trx_id,from_ac,to_ac,balance) to 'transaction' collection
         const new_transaction = await new Transaction({
             trx_id: new_trx_id,
             ecom_id,
@@ -351,11 +351,44 @@ const verifyTransactionController = async (req, res) => {
     }
 }
 
+const checkAccountController = async (req, res) => {
+    //variables
+    const { acc_id } = req.params;
+    try {
+        // check if account exists or not
+        const account = await BankAccount.findOne({ acc_id });
+
+        //if does not
+        if (!account) {
+            res.status(404).send({
+                success: false,
+                message: 'Account ID does not exist.'
+            })
+        }
+
+        //if exists
+        res.status(201).send({
+            success: true,
+            message: 'Account ID exists.'
+        })
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: 'Error in checking account',
+            error
+        })
+
+    }
+}
+
 module.exports = {
     createAccountController,
     checkBalanceController,
     addMoneyController,
     subMoneyController,
     makeTransactionController,
-    verifyTransactionController
+    verifyTransactionController,
+    checkAccountController
 };

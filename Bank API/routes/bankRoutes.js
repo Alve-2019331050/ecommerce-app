@@ -14,7 +14,8 @@ const { createAccountController,
     addMoneyController,
     subMoneyController,
     makeTransactionController,
-    verifyTransactionController
+    verifyTransactionController,
+    checkAccountController
 } = require('../controllers/bankController');
 
 
@@ -36,5 +37,8 @@ router.post('/makeTransaction', makeTransactionController);
 
 //VERIFY TRANSACTION || POST
 router.post('/verifyTransaction', verifyTransactionController);
+
+//CHECK ACCOUNT || GET
+router.get('/checkAccount/:acc_id', checkAccountController);
 
 module.exports = router;
