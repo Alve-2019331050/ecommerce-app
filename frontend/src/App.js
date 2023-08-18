@@ -3,8 +3,10 @@ import Product from "./pages/Product";
 import Cart from "./pages/Cart";
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
-import Bankinfo from './pages/Bankinfo';
+
 import ForgotPassword from "./pages/ForgotPassword";
+import CreateBankAccount from "./pages/CreateBankAccount";
+import UpdateWallet from "./pages/UpdateWallet";
 
 function App() {
   return (
@@ -14,7 +16,8 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/bankinfo" element={<Bankinfo />} />
+        <Route path="/bankinfo" element={<CreateBankAccount />} />
+        <Route path="/updatewallet" element={<UpdateWallet />} />
         <Route path='/forgot-password' element={<ForgotPassword />} />
       </Routes>
     </>

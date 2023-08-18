@@ -1,7 +1,6 @@
 const BankAccount = require("../models/account");
 
 
-
 //CREATE ACCOUNT controller || POST
 const createAccountController = async (req, res) => {
     try {
@@ -93,5 +92,66 @@ const checkBalanceController = async (req, res) => {
 
 }
 
+//ADD MONEY controller || POST
+const addMoneyController = async (req, res) => {
+
+    try {
+
+        //variables to store data after data sent through POST request
+        const { acc_id, addMoney } = req.body;
+
+
+        //validation
+        if (!acc_id || !addMoney) {
+            return res.send({
+                message: 'Account Id and money to be added both are required.'
+            });
+        }
+
+        //check if the account already exists
+        //get user from collection
+        const existingAccount = await BankAccount.findOne({ acc_id });
+
+        //if account does not exist
+        if (!existingAccount) {
+            return res.status(200).send({
+                success: false,
+                message: 'Account does not exist.',
+            });
+        }
+
+        //update account balance
+        existingAccount.balance += addMoney;
+
+        //send success response
+        res.status(201).send({
+            success: true,
+            message: "Balance updated successfully",
+            existingAccount
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: 'Error in adding money.',
+            error
+        })
+    }
+}
+
+//SUB MONEY || POST
+const subMoneyController = async (req, res) => {
+
+}
+
+// MAKE TRANSACTION controller || POST
+const makeTransactionController = async (req, res) => {
+
+}
+
 module.exports = createAccountController;
 module.exports = checkBalanceController;
+module.exports = makeTransactionController;
+module.exports = addMoneyController;
+module.exports = subMoneyController;

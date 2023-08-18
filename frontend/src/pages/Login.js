@@ -20,7 +20,7 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            console.log(email,password);
+            console.log(email, password);
             const res = await axios.post('http://localhost:8080/api/auth/login',
                 { email, password });
             if (res.data.success) {
@@ -75,10 +75,10 @@ const Login = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                                 className="form-control" id="pwd" placeholder="Enter password" name="pswd" required />
                         </div>
-                        <div style={{marginLeft: '225px', marginBottom: '12px'}}>
-                            <button type="button" class="btn btn-dark" onClick={()=>{setTimeout(() => {navigate("/forgot-password");}, 1000);}}>Forgot Password</button>
+                        <div style={{ marginLeft: '400px', marginTop: '-30px' }}>
+                            <button type="button" class="btn" onClick={() => { setTimeout(() => { navigate("/forgot-password"); }, 1000); }}><u>Forgot Password?</u></button>
                         </div>
-                        <div style={{ marginLeft: '260px' }}> 
+                        <div style={{ marginLeft: '260px' }}>
                             <button type="submit" class="btn btn-dark">Sign In</button>
                         </div>
                     </form>
@@ -99,7 +99,7 @@ const Login = () => {
                         <Link to="/signup" type="button" class="btn btn-light">Sign Up</Link>
                     </div>
                 </div>
-            </div >
+            </div>
         </Layout >
     )
 }
