@@ -3,15 +3,15 @@ import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/auth';
 
 const Header = () => {
-  const [auth, setAuth] = useAuth();
-  const handleLogout = () => {
-    setAuth({
-      ...auth,
-      user: null,
-      token: ''
-    });
-    localStorage.removeItem('auth');
-  }
+    const [auth, setAuth] = useAuth();
+    const handleLogout = () => {
+        setAuth({
+            ...auth,
+            user: null,
+            token: ''
+        });
+        localStorage.removeItem('auth');
+    }
     return (
         <>
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -38,10 +38,11 @@ const Header = () => {
                                         <NavLink to="/login" className="nav-link" href="#">Login</NavLink>
                                         <NavLink to="/signup" className="nav-link" href="#">SignUp</NavLink>
                                     </>
-                                ):(
+                                ) : (
                                     <>
-                                        <NavLink to='/' className='nav-link'>{auth?.user?.name}</NavLink>
                                         <NavLink to="/cart" className="nav-link" href="#">Cart</NavLink>
+                                        <NavLink to="/bankinfo" className="nav-link" href="#">Bank Info</NavLink>
+                                        <NavLink to='/' className='nav-link'>{auth?.user?.name}</NavLink>
                                         <NavLink to="/login" onClick={handleLogout} className="nav-link" href="#">LogOut</NavLink>
                                     </>
                                 )
