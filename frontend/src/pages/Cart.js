@@ -1,8 +1,12 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { Alert } from 'react-bootstrap';
+import { Checkmark } from 'react-checkmark';
 import { toast } from 'react-hot-toast';
 import { FaMinus, FaPlus } from 'react-icons/fa';
+import { ClipLoader } from 'react-spinners';
 import Layout from '../components/Layout/Layout';
+import Modal from '../components/Layout/Modal';
 import { useStore } from '../context/Store';
 import { useAuth } from '../context/auth';
 import products from './productData';
@@ -11,6 +15,9 @@ const Cart = () => {
     const [cartItems,setCartItems] = useStore();
     const [total,setTotal] = useState(0);
     const [auth] = useAuth();
+    const [showModal,setShowModal] = useState(false);
+    const [pending,setPending] = useState(true);
+    const [error,setError] = useState('');
 
     const fetchCartItems = async() => {
         const {data} = await axios.get(`http://localhost:8080/api/cart/get-items/${auth.user.email}`);
@@ -64,19 +71,21 @@ const Cart = () => {
 
     const handleCheckOut = async() => {
         try {
+            setShowModal(true);
             const {data} = await axios.post('http://localhost:8080/api/buy',{
                 userEmail:auth.user.email,
                 userAccountNo:123456,//tobechanged
                 transactionAmount:total
             });
             if(data?.success){
-                toast.success(data.message);
+                setPending(false);
             }
             else{
-                toast.error(data.message);
+                setPending(false);
+                setError(data.message);
             }
         } catch (error) {
-            toast.error('Could not make the checkout.Try Again!');
+            setError('Could not make the checkout.Try Again!');
         }
     };
 
@@ -86,6 +95,30 @@ const Cart = () => {
     },[cartItems])
     return (
         <Layout>
+            {
+                showModal && <Modal setShowModal={setShowModal}>
+                    {
+                        pending ? (
+                            <div className='d-flex justify-content-center'>
+                                <ClipLoader
+                                    color='green'
+                                    size={150}
+                                />
+                                <div className='mt-5 mx-3 fw-bold'>Your order is being processed....</div>
+                            </div>
+                        ):(
+                            error.length>0 ? (
+                                <Alert severity="error">{error}</Alert>
+                            ):(
+                                <div className='d-flex'>
+                                    <Checkmark size='xxLarge' />
+                                    <div className='mt-4 me-5 pe-4 fw-bold'>Product Supplied</div>
+                                </div>
+                            )
+                        )
+                    }
+                </Modal>
+            }
             <h2 className='flex d-flex mt-5 mb-5 px-5'>Products selected</h2>
             <div class="flex d-flex mt-2 px-5">
                 <div className='col-lg-9'>

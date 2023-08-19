@@ -1,26 +1,24 @@
-import React from 'react'
+import { CloseButton } from 'react-bootstrap';
+import Modal from 'react-bootstrap/Modal';
 
-const Modal = () => {
-    return (
-        <div className="modal" tabIndex={-1}>
-            <div className="modal-dialog">
-                <div className="modal-content">
-                    <div className="modal-header">
-                        <h5 className="modal-title">Modal title</h5>
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
-                    </div>
-                    <div className="modal-body">
-                        <p>Modal body text goes here.</p>
-                    </div>
-                    <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" className="btn btn-dark">Save changes</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+function MyModal(props) {
 
-    )
+  return (
+    <div
+      className="modal show"
+      style={{ display: 'block', position: 'initial' }}
+    >
+      <Modal.Dialog>
+        <Modal.Header>
+            <CloseButton onClick={()=>props.setShowModal(false)}/>
+        </Modal.Header>
+
+        <Modal.Body>
+          {props.children}
+        </Modal.Body>
+      </Modal.Dialog>
+    </div>
+  );
 }
 
-export default Modal
+export default MyModal;
