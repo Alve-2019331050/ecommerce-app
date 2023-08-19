@@ -5,10 +5,8 @@ const Transaction = require("../models/transaction");
 //CREATE ACCOUNT controller || POST
 const createAccountController = async (req, res) => {
     try {
-
         //variables to store data after data sent through POST request
         const { acc_id, secret, balance } = req.body;
-
 
         //validation
         if (!acc_id || !secret || !balance) {
@@ -52,7 +50,6 @@ const createAccountController = async (req, res) => {
             error
         })
     }
-
 }
 
 //GET AMOUNT controller || GET
@@ -62,7 +59,6 @@ const checkBalanceController = async (req, res) => {
     const { acc_id, secret } = req.params;
 
     try {
-
         //finding account from collection 
         const account = await BankAccount.findOne({ acc_id, secret });
 
@@ -81,7 +77,6 @@ const checkBalanceController = async (req, res) => {
         }
         )
 
-
     } catch (error) {
         res.status(500).send({
             success: false,
@@ -89,8 +84,6 @@ const checkBalanceController = async (req, res) => {
             message: 'Error while trying to check balance',
         })
     }
-
-
 }
 
 //ADD MONEY controller || POST
@@ -187,7 +180,6 @@ const subMoneyController = async (req, res) => {
 
 // MAKE TRANSACTION controller || POST
 const makeTransactionController = async (req, res) => {
-
     try {
         //variables 
         const { from_ac, to_ac, money } = req.body;
@@ -228,7 +220,6 @@ const makeTransactionController = async (req, res) => {
                 message: 'Transaction Failed. Receiver account does not have enough balance to make this transaction.'
             })
         } else {
-
             // DEBIT
             fromAccount.balance -= money;
             await fromAccount.save();
@@ -253,8 +244,6 @@ const makeTransactionController = async (req, res) => {
                 message: new_transaction
             })
         }
-
-
     } catch (error) {
         console.log(error);
         res.status(500).send({
@@ -263,7 +252,6 @@ const makeTransactionController = async (req, res) => {
             error
         })
     }
-
 }
 
 // VERIFY TRANSACTION controller || POST
@@ -328,8 +316,6 @@ const verifyTransactionController = async (req, res) => {
         const del = await Transaction.deleteOne({ _id: existing_transaction });
         console.log(`${del.deletedCount} document with deleted from transaction table.`);
 
-
-
         // GENERATE new transaction ID
         const new_trx_id = uuid.v4();
 
@@ -345,7 +331,6 @@ const verifyTransactionController = async (req, res) => {
             success: true,
             message: new_transaction
         })
-
 
     } catch (error) {
         console.log(error);
