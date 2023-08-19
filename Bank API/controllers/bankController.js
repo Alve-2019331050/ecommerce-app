@@ -315,7 +315,7 @@ const verifyTransactionController = async (req, res) => {
 
         // DELETE transaction record from user to ecom from transaction collection
         const del = await Transaction.deleteOne({ _id: existing_transaction });
-        console.log(`${del.deletedCount} document with deleted from transaction table.`);
+        console.log(`${del.deletedCount} document deleted from transaction table.`);
 
         // GENERATE new transaction ID
         const new_trx_id = uuid.v4();
