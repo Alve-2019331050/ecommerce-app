@@ -8,12 +8,13 @@ const CreateBankAccount = () => {
     //variables and setter functions to capture data entered in the form input field
     const [acc_id, setAccount] = useState("");
     const [secret, setSecret] = useState("");
-    const [balance, setBalance] = useState("");
+    var [balance, setBalance] = useState("");
 
     //form function
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            balance = Number(balance);
             console.log('Submitting:', acc_id, secret, balance);
             const res = await axios.post('http://localhost:8082/api/bank/createAccount', { acc_id, secret, balance });
 
