@@ -1,10 +1,12 @@
+const axios = require('axios');
+
 module.exports = balanceController = async(req,res) => {
     try {
-        const {data} = await axios.get(`http://localhost:8082/api/bank/check-balance/${process.env.SUPPLIER_ACCOUNT_NO}/${process.env.SUPPLIER_SECRET_KEY}`); // to be changed
+        const {data} = await axios.get(`http://localhost:8082/api/bank/checkBalance/${process.env.SUPPLIER_ACCOUNT_NO}/${process.env.SUPPLIER_SECRET_KEY}`);
         if(data?.success){
             res.status(200).send({
                 success:true,
-                message:`Your current balance is ${data.balance}`
+                message:`Your current balance is ${data.message}`
             });
         }
         else{

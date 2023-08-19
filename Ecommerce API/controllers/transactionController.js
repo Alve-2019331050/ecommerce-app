@@ -5,7 +5,7 @@ module.exports.handleBuy = async(req,res) => {
         const {userAccountNo,transactionAmount} = req.body;
 
         // check if any user exists with this account no
-        const {data} = await axios.get(`http://localhost:8082/api/bank/account/${userAccountNo}`);
+        const {data} = await axios.get(`http://localhost:8082/api/bank/checkAccount/${userAccountNo}`);
         if(data?.success == false){
             res.status(500).send({
                 success:false,
@@ -20,7 +20,7 @@ module.exports.handleBuy = async(req,res) => {
             });
             if(transaction?.success){
                 const {data:orderInfo} = await axios.post('http://localhost:8081/api/supplier/supply-product',{
-                    transactionRecord:transaction.trx_id
+                    transactionRecord:transaction.message.trx_id
                 });
                 if(orderInfo?.success == false){
                     res.status(503).send({

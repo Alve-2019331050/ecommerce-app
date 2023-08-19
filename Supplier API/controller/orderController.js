@@ -1,3 +1,5 @@
+const axios = require('axios');
+
 module.exports.supplyProductController = async(req,res) => {
     try {
         const {transactionRecord} = req.body;
