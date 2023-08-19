@@ -1,6 +1,7 @@
 const BankAccount = require("../models/account");
 const uuid = require('uuid');
 const Transaction = require("../models/transaction");
+const EmailBank = require('../models/emailBank')
 
 //CREATE ACCOUNT controller || POST
 const createAccountController = async (req, res) => {
@@ -187,7 +188,7 @@ const makeTransactionController = async (req, res) => {
         //validation
         if (!from_ac || !to_ac || !money) {
             return res.send({
-                success:false,
+                success: false,
                 message: 'Please enter from account ID, to account ID and money.'
             });
         }
@@ -376,6 +377,88 @@ const checkAccountController = async (req, res) => {
     }
 }
 
+
+// CHECK FOR EMAIL controller || GET
+const checkForEmailController = async (req, res) => {
+    //get email, acc_id from request parameters
+    const { email } = req.params;
+
+    try {
+        // finding account from collection
+        const account = await EmailBank.findOne({ email });
+
+        //if account does not exist
+        if (!account) {
+            res.status(404).send({
+                success: false,
+                message: 'Account does not exist.'
+            })
+        }
+
+        //if exists
+        if (account) {
+            res.status(201).send({
+                success: true,
+                message: account.acc_id
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            error,
+            message: 'Error while checking account id for given email.'
+        })
+    }
+}
+
+const saveAccountForEmailController = async (req, res) => {
+    try {
+        //variables
+        const { email, acc_id } = req.body;
+
+        //validation
+        if (!email || !acc_id) {
+            return res.send({
+                message: 'All fields are required.'
+            })
+        }
+
+        //check if account is already saved for the email
+
+        const existingAccount = await EmailBank.findOne({ email, acc_id });
+
+        //if already exists
+        if (existingAccount) {
+            return res.status(200).send({
+                success: false,
+                message: 'There is already an account saved for this email.'
+            })
+        }
+
+        //create and save new account
+        const new_account = await new EmailBank({
+            email,
+            acc_id
+        }).save();
+
+        // send success response
+        res.status(201).send({
+            success: true,
+            message: 'Account ID for the given email ID saved successfully.',
+            new_account
+        })
+
+    } catch (error) {
+        console.log(error),
+            res.status(500).send({
+                success: false,
+                error,
+                message: 'Error in saving account ID for email.'
+            })
+    }
+}
+
 module.exports = {
     createAccountController,
     checkBalanceController,
@@ -383,5 +466,7 @@ module.exports = {
     subMoneyController,
     makeTransactionController,
     verifyTransactionController,
-    checkAccountController
+    checkAccountController,
+    checkForEmailController,
+    saveAccountForEmailController
 };
