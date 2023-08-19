@@ -1,5 +1,9 @@
-import React, { useState } from 'react'
-import Layout from '../components/Layout/Layout'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
+import Layout from '../components/Layout/Layout';
+import { useStore } from '../context/Store';
+import { useAuth } from '../context/auth';
 // import { Link } from 'react-router-dom';
 // // import products from './productData';
 // import Cart from './Cart';
@@ -28,17 +32,59 @@ const Product = () => {
     //useState hook
     // will individually check if a product has been added or not
     const [toggledProducts, setToggledProducts] = useState([]);
+    const [cartItems,setCartItems] = useStore();
+    const [auth] = useAuth();
 
     //function to handle toggle
-    const handleToggle = (index) => {
-        const updatedToggledProducts = [...toggledProducts];
-        if (updatedToggledProducts.includes(index)) {
-            updatedToggledProducts.splice(updatedToggledProducts.indexOf(index), 1);
-        } else {
-            updatedToggledProducts.push(index);
+    const handleToggle = async(index) => {
+        try {
+            const updatedToggledProducts = [...toggledProducts];
+            if (updatedToggledProducts.includes(index)) {
+                const {data} = await axios.delete(`http://localhost:8080/api/cart/remove-product/${auth.user.email}/${index}`);
+                if(data?.success){
+                    toast.success('Removed this product from cart');
+                    updatedToggledProducts.splice(updatedToggledProducts.indexOf(index), 1);
+                }
+                else{
+                    toast.error('Could not remove the product');
+                }
+            } else {
+                const {data} = await axios.post('http://localhost:8080/api/cart/insert-product',{
+                    userEmail:auth.user.email,
+                    productId:index
+                });
+                if(data?.success){
+                    toast.success('Added this product in cart');
+                    updatedToggledProducts.push(index);
+                }
+                else{
+                    toast.error('Could not add the product');
+                }
+            }
+            setToggledProducts(updatedToggledProducts);
+        } catch (error) {
+            console.log(error);
+            toast.error('Could not remove the product');
         }
-        setToggledProducts(updatedToggledProducts);
     };
+
+    const fetchCartItems = async() => {
+        console.log(auth.user.email);
+        const {data} = await axios.get(`http://localhost:8080/api/cart/get-items/${auth.user.email}`);
+        if(data?.success){
+            const products = data.items;
+            const updatedToggledProducts = products.map(({productId}) => productId);
+            setToggledProducts(updatedToggledProducts);
+            const updatedCartItems = products.map(({productId,quantity}) => {return({productId,quantity});});
+            setCartItems(updatedCartItems);
+        }
+    }
+
+    //fetching all the cart items when the page is loaded
+    useEffect(() => {
+        if(auth.user)
+            fetchCartItems();
+    },[auth.user]);
 
     return (
         <Layout>
