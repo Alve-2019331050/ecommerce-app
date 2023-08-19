@@ -69,7 +69,6 @@ const Product = () => {
     };
 
     const fetchCartItems = async() => {
-        console.log(auth.user.email);
         const {data} = await axios.get(`http://localhost:8080/api/cart/get-items/${auth.user.email}`);
         if(data?.success){
             const products = data.items;

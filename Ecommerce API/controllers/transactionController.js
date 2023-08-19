@@ -1,8 +1,9 @@
 const axios = require('axios');
+const cartModel = require('../models/cartModel');
 
 module.exports.handleBuy = async(req,res) => {
     try {
-        const {userAccountNo,transactionAmount} = req.body;
+        const {userEmail,userAccountNo,transactionAmount} = req.body;
 
         // check if any user exists with this account no
         const {data} = await axios.get(`http://localhost:8082/api/bank/checkAccount/${userAccountNo}`);
@@ -28,6 +29,16 @@ module.exports.handleBuy = async(req,res) => {
                         message:orderInfo.message
                     });
                 }
+                else{
+                    //transaction is successful..empty the cart
+                    const empty = await cartModel.delete({userEmail:userEmail});
+                    if(!empty){
+                        res.status(504).send({
+                            success:false,
+                            message:'Could not clear the cart'
+                        });
+                    }
+                }
             }
             else{
                 res.status(501).send({
@@ -42,7 +53,7 @@ module.exports.handleBuy = async(req,res) => {
             success:false,
             message:'Could not complete the transaction'
         })
-    } 
+    }
     res.status(200).send({
         success:true,
         message:'Order placed successfully'

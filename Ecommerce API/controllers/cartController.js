@@ -82,4 +82,58 @@ module.exports.getCartItemsController = async(req,res) => {
             message:'Could not fetch cart items'
         });
     }
+};
+
+module.exports.decrementController = async(req,res) => {
+    try {
+        const {userEmail,productId} = req.body;
+        const cart = await cartModel.findOne({userEmail:userEmail,productId:productId});
+        if(!cart){
+            res.status(501).send({
+                success:false,
+                message:'The item is not in cart'
+            });
+        }
+        else{
+            cart.quantity -= 1;
+            await cart.save();
+            res.status(200).send({
+                success:true,
+                message:'decremented successfully'
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success:false,
+            message:'Could not decrease quantity'
+        })
+    }
+};
+
+module.exports.incrementController = async(req,res) => {
+    try {
+        const {userEmail,productId} = req.body;
+        const cart = await cartModel.findOne({userEmail:userEmail,productId:productId});
+        if(!cart){
+            res.status(501).send({
+                success:false,
+                message:'The item is not in cart'
+            });
+        }
+        else{
+            cart.quantity += 1;
+            await cart.save();
+            res.status(200).send({
+                success:true,
+                message:'incremented successfully'
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success:false,
+            message:'Could not increase quantity'
+        })
+    }
 }

@@ -8,5 +8,9 @@ router.delete('/remove-product/:userEmail/:productId',cartController.removeContr
 router.post('/insert-product',cartController.insertController);
 //get cart items
 router.get('/get-items/:userEmail',cartController.getCartItemsController);
+//decrement quantity
+router.post('/decrease-quantity',cartController.decrementController);
+//increment quantity
+router.post('/increase-quantity',cartController.incrementController);
 
 module.exports = router;
