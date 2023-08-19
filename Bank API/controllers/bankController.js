@@ -58,7 +58,7 @@ const createAccountController = async (req, res) => {
 //GET AMOUNT controller || GET
 const checkBalanceController = async (req, res) => {
 
-    //get acc_id, secret for request parameters
+    //get acc_id, secret from request parameters
     const { acc_id, secret } = req.params;
 
     try {
@@ -324,14 +324,20 @@ const verifyTransactionController = async (req, res) => {
         supplier.balance += balance;
         await supplier.save();
 
+        // DELETE transaction record from user to ecom from transaction collection
+        const del = await Transaction.deleteOne({ _id: existing_transaction });
+        console.log(`${del.deletedCount} document with deleted from transaction table.`);
+
+
+
         // GENERATE new transaction ID
         const new_trx_id = uuid.v4();
 
         // save transaction record(trx_id,from_ac,to_ac,balance) to 'transaction' collection
         const new_transaction = await new Transaction({
             trx_id: new_trx_id,
-            ecom_id,
-            sup_id,
+            from_ac: ecom_id,
+            to_ac: sup_id,
             balance
         }).save();
 
@@ -351,6 +357,7 @@ const verifyTransactionController = async (req, res) => {
     }
 }
 
+//CHECK ACCOUNT controller || GET
 const checkAccountController = async (req, res) => {
     //variables
     const { acc_id } = req.params;
