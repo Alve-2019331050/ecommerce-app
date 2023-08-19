@@ -31,7 +31,7 @@ module.exports.handleBuy = async(req,res) => {
                 }
                 else{
                     //transaction is successful..empty the cart
-                    const empty = await cartModel.delete({userEmail:userEmail});
+                    const empty = await cartModel.deleteMany({userEmail:userEmail});
                     if(!empty){
                         res.status(504).send({
                             success:false,

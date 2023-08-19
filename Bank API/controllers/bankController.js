@@ -1,16 +1,17 @@
 const BankAccount = require("../models/account");
 const uuid = require('uuid');
 const Transaction = require("../models/transaction");
-const EmailBank = require('../models/emailBank')
+const EmailBank = require('../models/emailBank');
+const axios = require('axios');
 
 //CREATE ACCOUNT controller || POST
 const createAccountController = async (req, res) => {
     try {
         //variables to store data after data sent through POST request
-        const { acc_id, secret, balance } = req.body;
+        const { userEmail,acc_id, secret, balance } = req.body;
 
         //validation
-        if (!acc_id || !secret || !balance) {
+        if (!userEmail || !acc_id || !secret || !balance) {
             return res.send({
                 message: 'All fields are required.'
             });
@@ -36,8 +37,21 @@ const createAccountController = async (req, res) => {
             balance
         }).save();
 
+        //save email with this account
+        const {data} = await axios.post('http://localhost:8082/api/bank/saveAccountForEmail',{
+            email:userEmail, 
+            acc_id
+        });
+
+        if(!data?.success){
+            return res.status(501).send({
+                success:false,
+                message:'Could not save email for this account'
+            });
+        }
+
         //send success response
-        res.status(201).send({
+        return res.status(201).send({
             success: true,
             message: "Account created successfully",
             new_account
@@ -45,7 +59,7 @@ const createAccountController = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        res.status(500).send({
+        return res.status(500).send({
             success: false,
             message: 'Error in creating bank account.',
             error
@@ -72,14 +86,14 @@ const checkBalanceController = async (req, res) => {
         }
 
         //send account balance
-        res.status(200).send({
+        return res.status(200).send({
             success: true,
             message: account.balance,
         }
         )
 
     } catch (error) {
-        res.status(500).send({
+        return res.status(500).send({
             success: false,
             error,
             message: 'Error while trying to check balance',
@@ -117,7 +131,7 @@ const addMoneyController = async (req, res) => {
         await existingAccount.save();
 
         //send success response
-        res.status(201).send({
+        return res.status(201).send({
             success: true,
             message: "Balance updated successfully",
             existingAccount
@@ -125,7 +139,7 @@ const addMoneyController = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        res.status(500).send({
+        return res.status(500).send({
             success: false,
             message: 'Error in adding money.',
             error
@@ -163,7 +177,7 @@ const subMoneyController = async (req, res) => {
         await existingAccount.save();
 
         //send success response
-        res.status(201).send({
+        return res.status(201).send({
             success: true,
             message: "Balance updated successfully",
             existingAccount
@@ -171,7 +185,7 @@ const subMoneyController = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        res.status(500).send({
+        return res.status(500).send({
             success: false,
             message: 'Error in withdrawing money.',
             error
@@ -248,7 +262,7 @@ const makeTransactionController = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
-        res.status(500).send({
+        return res.status(500).send({
             success: false,
             message: 'Error in making transaction',
             error
@@ -281,7 +295,7 @@ const verifyTransactionController = async (req, res) => {
 
         // if does not exist
         if (!ecommerce) {
-            res.status(404).send({
+            return res.status(404).send({
                 success: false,
                 message: 'Ecommerce organization account ID does not exist.'
             });
@@ -292,7 +306,7 @@ const verifyTransactionController = async (req, res) => {
 
         // if does not exist
         if (!supplier) {
-            res.status(404).send({
+            return res.status(404).send({
                 success: false,
                 message: 'The provided supplier account ID does not exist.'
             });
@@ -329,14 +343,14 @@ const verifyTransactionController = async (req, res) => {
             balance
         }).save();
 
-        res.status(201).send({
+        return res.status(201).send({
             success: true,
             message: new_transaction
         })
 
     } catch (error) {
         console.log(error);
-        res.status(500).send({
+        return res.status(500).send({
             success: false,
             message: 'Error in verifying transaction.',
             error
@@ -354,21 +368,21 @@ const checkAccountController = async (req, res) => {
 
         //if does not
         if (!account) {
-            res.status(404).send({
+            return res.status(404).send({
                 success: false,
                 message: 'Account ID does not exist.'
             })
         }
 
         //if exists
-        res.status(201).send({
+        return res.status(201).send({
             success: true,
             message: 'Account ID exists.'
         })
 
     } catch (error) {
         console.log(error);
-        res.status(500).send({
+        return res.status(500).send({
             success: false,
             message: 'Error in checking account',
             error
@@ -389,22 +403,22 @@ const checkForEmailController = async (req, res) => {
 
         //if account does not exist
         if (!account) {
-            res.status(404).send({
+            return res.status(404).send({
                 success: false,
                 message: 'Account does not exist.'
-            })
+            });
         }
 
         //if exists
         if (account) {
-            res.status(201).send({
+            return res.status(201).send({
                 success: true,
                 message: account.acc_id
             })
         }
     } catch (error) {
         console.log(error);
-        res.status(500).send({
+        return res.status(500).send({
             success: false,
             error,
             message: 'Error while checking account id for given email.'
@@ -443,19 +457,19 @@ const saveAccountForEmailController = async (req, res) => {
         }).save();
 
         // send success response
-        res.status(201).send({
+        return res.status(201).send({
             success: true,
             message: 'Account ID for the given email ID saved successfully.',
             new_account
         })
 
     } catch (error) {
-        console.log(error),
-            res.status(500).send({
+        console.log(error);
+        return res.status(500).send({
                 success: false,
                 error,
                 message: 'Error in saving account ID for email.'
-            })
+        })
     }
 }
 

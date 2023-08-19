@@ -1,14 +1,16 @@
-import React, { useState } from 'react'
-import Layout from '../components/Layout/Layout'
-import BankSidebar from '../components/Layout/BankSidebar'
 import axios from 'axios'
+import React, { useState } from 'react'
 import toast from 'react-hot-toast'
+import BankSidebar from '../components/Layout/BankSidebar'
+import Layout from '../components/Layout/Layout'
+import { useAuth } from '../context/auth'
 
 const CreateBankAccount = () => {
     //variables and setter functions to capture data entered in the form input field
     const [acc_id, setAccount] = useState("");
     const [secret, setSecret] = useState("");
     var [balance, setBalance] = useState("");
+    const [auth] = useAuth();
 
     //form function
     const handleSubmit = async (e) => {
@@ -16,9 +18,9 @@ const CreateBankAccount = () => {
         try {
             balance = Number(balance);
             console.log('Submitting:', acc_id, secret, balance);
-            const res = await axios.post('http://localhost:8082/api/bank/createAccount', { acc_id, secret, balance });
+            const res = await axios.post('http://localhost:8082/api/bank/createAccount', { userEmail:auth.user.email,acc_id, secret, balance });
 
-            if (res.data.success) {
+            if (res.data?.success) {
                 toast.success(res.data.message);
             } else {
                 console.log('API Error:', res.data.message);

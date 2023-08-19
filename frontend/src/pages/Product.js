@@ -38,30 +38,35 @@ const Product = () => {
     //function to handle toggle
     const handleToggle = async(index) => {
         try {
-            const updatedToggledProducts = [...toggledProducts];
-            if (updatedToggledProducts.includes(index)) {
-                const {data} = await axios.delete(`http://localhost:8080/api/cart/remove-product/${auth.user.email}/${index}`);
-                if(data?.success){
-                    toast.success('Removed this product from cart');
-                    updatedToggledProducts.splice(updatedToggledProducts.indexOf(index), 1);
-                }
-                else{
-                    toast.error('Could not remove the product');
-                }
-            } else {
-                const {data} = await axios.post('http://localhost:8080/api/cart/insert-product',{
-                    userEmail:auth.user.email,
-                    productId:index
-                });
-                if(data?.success){
-                    toast.success('Added this product in cart');
-                    updatedToggledProducts.push(index);
-                }
-                else{
-                    toast.error('Could not add the product');
-                }
+            if(!auth.user){
+                toast.error('You need to be logged in');
             }
-            setToggledProducts(updatedToggledProducts);
+            else{
+                const updatedToggledProducts = [...toggledProducts];
+                if (updatedToggledProducts.includes(index)) {
+                    const {data} = await axios.delete(`http://localhost:8080/api/cart/remove-product/${auth.user.email}/${index}`);
+                    if(data?.success){
+                        toast.success('Removed this product from cart');
+                        updatedToggledProducts.splice(updatedToggledProducts.indexOf(index), 1);
+                    }
+                    else{
+                        toast.error('Could not remove the product');
+                    }
+                } else {
+                    const {data} = await axios.post('http://localhost:8080/api/cart/insert-product',{
+                        userEmail:auth.user.email,
+                        productId:index
+                    });
+                    if(data?.success){
+                        toast.success('Added this product in cart');
+                        updatedToggledProducts.push(index);
+                    }
+                    else{
+                        toast.error('Could not add the product');
+                    }
+                }
+                setToggledProducts(updatedToggledProducts);
+            }
         } catch (error) {
             console.log(error);
             toast.error('Could not remove the product');
