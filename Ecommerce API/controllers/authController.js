@@ -37,7 +37,7 @@ module.exports.registerController = async (req, res) => {
             answer
         }).save();
 
-        res.status(201).send({
+        return res.status(201).send({
             success: true,
             message: 'User Registered Successfully!',
             user
@@ -45,7 +45,7 @@ module.exports.registerController = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        res.status(500).send({
+        return res.status(500).send({
             success: false,
             message: 'Error in Registration',
             error
@@ -61,7 +61,7 @@ module.exports.loginController = async (req, res) => {
 
         //validation
         if (!email || !password) {
-            return res.status(404).send({
+            return res.status(200).send({
                 success: false,
                 message: 'Invalid email or password',
             });
@@ -72,7 +72,7 @@ module.exports.loginController = async (req, res) => {
 
         //if user not found
         if (!user) {
-            return res.status(404).send({
+            return res.status(200).send({
                 success: false,
                 message: 'Email is not registered. Please register first.',
             });
@@ -99,7 +99,7 @@ module.exports.loginController = async (req, res) => {
             }
         );
 
-        res.status(200).send({
+        return res.status(200).send({
             success: true,
             message: 'User Logged in successfully !',
             user: {
@@ -114,7 +114,7 @@ module.exports.loginController = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        res.status(500).send({
+        return res.status(500).send({
             success: false,
             message: 'Error in login',
             error,
@@ -126,31 +126,31 @@ module.exports.forgotPasswordController = async(req,res) => {
     try {
         const {email,answer,newPassword} = req.body;
         if(!email){
-            res.status(400).send({message:'Email is required'});
+            return res.status(400).send({message:'Email is required'});
         }
         if(!answer){
-            res.status(400).send({message:'Answer is required'});
+            return res.status(400).send({message:'Answer is required'});
         }
         if(!newPassword){
-            res.status(400).send({message:'NewPassword is required'});
+            return res.status(400).send({message:'NewPassword is required'});
         }
 
         const user = await userModel.findOne({email,answer});
         if(!user){
-            return res.status(404).send({
+            return res.status(200).send({
                 success:false,
                 message:'Invalid email or answer'
             });
         }
         const hashed = await authHelper.hashPassword(newPassword);
         await userModel.findByIdAndUpdate(user._id,{password:hashed});
-        res.status(200).send({
+        return res.status(200).send({
             success:true,
             message:'Password reset Successfully'
         });
     } catch (error) {
         console.log(error);
-        res.status(500).send({
+        return res.status(500).send({
             success:false,
             message:'Something went wrong',
             error

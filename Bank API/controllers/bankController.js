@@ -44,7 +44,7 @@ const createAccountController = async (req, res) => {
         });
 
         if(!data?.success){
-            return res.status(501).send({
+            return res.status(200).send({
                 success:false,
                 message:'Could not save email for this account'
             });
@@ -79,7 +79,7 @@ const checkBalanceController = async (req, res) => {
 
         //if account does not exist
         if (!account) {
-            res.status(404).send({
+            return res.status(200).send({
                 success: false,
                 message: 'Account does not exist.',
             });
@@ -120,7 +120,7 @@ const addMoneyController = async (req, res) => {
 
         //if account does not exist
         if (!existingAccount) {
-            return res.status(404).send({
+            return res.status(200).send({
                 success: false,
                 message: 'Account does not exist.',
             });
@@ -166,7 +166,7 @@ const subMoneyController = async (req, res) => {
 
         //if account does not exist
         if (!existingAccount) {
-            return res.status(404).send({
+            return res.status(200).send({
                 success: false,
                 message: 'Account does not exist.',
             });
@@ -212,7 +212,7 @@ const makeTransactionController = async (req, res) => {
 
         //if does not
         if (!fromAccount) {
-            return res.status(404).send({
+            return res.status(200).send({
                 success: false,
                 message: 'Account from which money is to be debited from does not exist.'
             })
@@ -223,7 +223,7 @@ const makeTransactionController = async (req, res) => {
 
         //if does not
         if (!toAccount) {
-            return res.status(404).send({
+            return res.status(200).send({
                 success: false,
                 message: 'Account in which money is to be credited to does not exist.'
             })
@@ -233,7 +233,7 @@ const makeTransactionController = async (req, res) => {
         if (fromAccount.balance < money) {
             return res.status(200).send({
                 success: false,
-                message: 'Transaction Failed. Receiver account does not have enough balance to make this transaction.'
+                message: 'Transaction Failed. Your account does not have enough balance to make this transaction.'
             })
         } else {
             // DEBIT
@@ -281,7 +281,7 @@ const verifyTransactionController = async (req, res) => {
 
         //if does not exist
         if (!existing_transaction) {
-            res.status(404).send({
+            return res.status(200).send({
                 success: false,
                 message: 'The provided transaction ID does not exist.'
             })
@@ -295,7 +295,7 @@ const verifyTransactionController = async (req, res) => {
 
         // if does not exist
         if (!ecommerce) {
-            return res.status(404).send({
+            return res.status(200).send({
                 success: false,
                 message: 'Ecommerce organization account ID does not exist.'
             });
@@ -306,7 +306,7 @@ const verifyTransactionController = async (req, res) => {
 
         // if does not exist
         if (!supplier) {
-            return res.status(404).send({
+            return res.status(200).send({
                 success: false,
                 message: 'The provided supplier account ID does not exist.'
             });
@@ -368,7 +368,7 @@ const checkAccountController = async (req, res) => {
 
         //if does not
         if (!account) {
-            return res.status(404).send({
+            return res.status(200).send({
                 success: false,
                 message: 'Account ID does not exist.'
             })
@@ -403,7 +403,7 @@ const checkForEmailController = async (req, res) => {
 
         //if account does not exist
         if (!account) {
-            return res.status(404).send({
+            return res.status(200).send({
                 success: false,
                 message: 'Account does not exist.'
             });

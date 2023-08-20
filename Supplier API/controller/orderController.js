@@ -7,20 +7,20 @@ module.exports.supplyProductController = async(req,res) => {
             trx_id:transactionRecord
         });
         if(data?.success){
-            res.status(200).send({
+            return res.status(200).send({
                 success:true,
                 message:'Product Supplied'
             });
         }
         else{
-            res.status(404).send({
+            return res.status(200).send({
                 success:false,
                 message:data.message
             });
         }
     } catch (error) {
         console.log(error);
-        res.status(500).send({
+        return res.status(500).send({
             success:false,
             message:'Could not supply product'
         });

@@ -8,7 +8,7 @@ module.exports.handleBuy = async(req,res) => {
         // check if any user exists with this account no
         const {data} = await axios.get(`http://localhost:8082/api/bank/checkAccount/${userAccountNo}`);
         if(data?.success == false){
-            res.status(500).send({
+            return res.status(200).send({
                 success:false,
                 message:data.message
             });
@@ -24,7 +24,7 @@ module.exports.handleBuy = async(req,res) => {
                     transactionRecord:transaction.message.trx_id
                 });
                 if(orderInfo?.success == false){
-                    res.status(503).send({
+                    return res.status(200).send({
                         success:false,
                         message:orderInfo.message
                     });
@@ -33,7 +33,7 @@ module.exports.handleBuy = async(req,res) => {
                     //transaction is successful..empty the cart
                     const empty = await cartModel.deleteMany({userEmail:userEmail});
                     if(!empty){
-                        res.status(504).send({
+                        return res.status(200).send({
                             success:false,
                             message:'Could not clear the cart'
                         });
@@ -41,7 +41,7 @@ module.exports.handleBuy = async(req,res) => {
                 }
             }
             else{
-                res.status(501).send({
+                return res.status(200).send({
                     success:false,
                     message:transaction.message
                 });
@@ -49,13 +49,13 @@ module.exports.handleBuy = async(req,res) => {
         }
     } catch (error) {
         console.log(error);
-        res.status(502).send({
+        return res.status(502).send({
             success:false,
             message:'Could not complete the transaction'
         })
     }
-    res.status(200).send({
+    return res.status(200).send({
         success:true,
         message:'Order placed successfully'
-    })
+    });
 }

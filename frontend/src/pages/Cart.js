@@ -91,6 +91,7 @@ const Cart = () => {
                     userAccountNo:userAccountNo,
                     transactionAmount:total
                 });
+                console.log(data);
                 if(data?.success){
                     setPending(false);
                     timer = setTimeout(()=>{
@@ -107,6 +108,7 @@ const Cart = () => {
                 setError('Secret key does not match');
             }
         } catch (error) {
+            console.log(error);
             setSecretMatch(false);
             setPending(false);
             setError('Could not make the checkout.Try Again!');
@@ -221,7 +223,7 @@ const Cart = () => {
                                         : Tk. {' '} 
                                         {total}
                                 </div> 
-                                <div className='mx-2'><input type='text' value={secret} placeholder='Type your bank secret' className='form-control' onChange={(e)=>setSecret(e.target.value)}/></div>
+                                <div className='mx-2'><input type='password' value={secret} placeholder='Type your bank secret' className='form-control' onChange={(e)=>setSecret(e.target.value)}/></div>
                                 <div className="px-5 mx-3 py-3 fw-bold">
                                     <button className="bg-dark bg-gradient border p-3 text-white" onClick={()=>handleCheckOut()}>Check Out</button>
                                 </div>
